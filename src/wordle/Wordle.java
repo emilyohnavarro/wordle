@@ -11,8 +11,8 @@ public class Wordle {
 									// have already been accounted for in the result string
 									// for the current guess
 	
-	private final int WORD_LENGTH = 5;
-	private final int MAX_GUESSES = 6;
+	public static final int WORD_LENGTH = 5;
+	public static final int MAX_GUESSES = 6;
 	
 	private enum GameStatus {
 		IN_PROGRESS,
@@ -130,7 +130,7 @@ public class Wordle {
 	
 	
 	public static void main(String[] args) {
-		Wordle game = new Wordle("threw");
+		Wordle game = new Wordle("relic");
 		Scanner in = new Scanner(System.in);
 		while (!game.isGameOver()) {
 			System.out.print("Enter your guess: ");
