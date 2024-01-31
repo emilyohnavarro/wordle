@@ -130,7 +130,7 @@ public class Wordle {
 	
 	
 	public static void main(String[] args) {
-		Wordle game = new Wordle("relic");
+		Wordle game = new Wordle("bulky");
 		Scanner in = new Scanner(System.in);
 		while (!game.isGameOver()) {
 			System.out.print("Enter your guess: ");

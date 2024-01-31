@@ -9,59 +9,64 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class WordleUI extends JFrame {
-	private Map<Character, Tile> tileMap;
+	private Map<Character, TileLayer> tileMap;
 	private Wordle wordle;
 	private JPanel mainBoard;
-	private JLabel[][] spaces; // md array of spaces
+	private VisibleTile[][] spaces; // md array of spaces
+	private int currRow, currCol;
+	private StringBuilder currentGuess;
 
 	public WordleUI() { // constructor
 		wordle = new Wordle("route");
 		createTileMap();
 		createComponents();
+		currRow = currCol = 0;
+		currentGuess = new StringBuilder();
 	}
 	
 	private void createTileMap() {
 		tileMap = new HashMap<>();
-		tileMap.put(' ', Tile.BLANK);
-		tileMap.put('a', Tile.A);
-		tileMap.put('b', Tile.B);
-		tileMap.put('c', Tile.C);
-		tileMap.put('d', Tile.D);
-		tileMap.put('e', Tile.E);
-		tileMap.put('f', Tile.F);
-		tileMap.put('g', Tile.G);
-		tileMap.put('h', Tile.H);
-		tileMap.put('i', Tile.I);
-		tileMap.put('j', Tile.J);
-		tileMap.put('k', Tile.K);
-		tileMap.put('l', Tile.L);
-		tileMap.put('m', Tile.M);
-		tileMap.put('n', Tile.N);
-		tileMap.put('o', Tile.O);
-		tileMap.put('p', Tile.P);
-		tileMap.put('q', Tile.Q);
-		tileMap.put('r', Tile.R);
-		tileMap.put('s', Tile.S);
-		tileMap.put('t', Tile.T);
-		tileMap.put('u', Tile.U);
-		tileMap.put('v', Tile.V);
-		tileMap.put('w', Tile.W);
-		tileMap.put('x', Tile.X);
-		tileMap.put('y', Tile.Y);
-		tileMap.put('z', Tile.Z);
+		tileMap.put(' ', TileLayer.BLANK);
+		tileMap.put('a', TileLayer.A);
+		tileMap.put('b', TileLayer.B);
+		tileMap.put('c', TileLayer.C);
+		tileMap.put('d', TileLayer.D);
+		tileMap.put('e', TileLayer.E);
+		tileMap.put('f', TileLayer.F);
+		tileMap.put('g', TileLayer.G);
+		tileMap.put('h', TileLayer.H);
+		tileMap.put('i', TileLayer.I);
+		tileMap.put('j', TileLayer.J);
+		tileMap.put('k', TileLayer.K);
+		tileMap.put('l', TileLayer.L);
+		tileMap.put('m', TileLayer.M);
+		tileMap.put('n', TileLayer.N);
+		tileMap.put('o', TileLayer.O);
+		tileMap.put('p', TileLayer.P);
+		tileMap.put('q', TileLayer.Q);
+		tileMap.put('r', TileLayer.R);
+		tileMap.put('s', TileLayer.S);
+		tileMap.put('t', TileLayer.T);
+		tileMap.put('u', TileLayer.U);
+		tileMap.put('v', TileLayer.V);
+		tileMap.put('w', TileLayer.W);
+		tileMap.put('x', TileLayer.X);
+		tileMap.put('y', TileLayer.Y);
+		tileMap.put('z', TileLayer.Z);
 	}
 	
 	private void createComponents() {
 		mainBoard = new JPanel();
 		mainBoard.setLayout(new GridLayout(Wordle.MAX_GUESSES, Wordle.WORD_LENGTH, 4, 4));
 		
-		spaces = new JLabel[Wordle.MAX_GUESSES][Wordle.WORD_LENGTH];
+		spaces = new VisibleTile[Wordle.MAX_GUESSES][Wordle.WORD_LENGTH];
 		for (int i = 0; i < spaces.length; i++) {
 			for (int j = 0; j < spaces[0].length; j++) {
-				JLabel letterLabel = new JLabel(Tile.BLANK.getImage());
+				JLabel letterLabel = new JLabel(TileLayer.BLANK.getImage());
 				letterLabel.setLayout(new BorderLayout());
-				spaces[i][j] = letterLabel;
-				mainBoard.add(spaces[i][j]);
+//				letterLabel.add(new JLabel(TileLayer.E.getImage()));
+				spaces[i][j] = new VisibleTile(TileLayer.BLANK, TileLayer.BLANK, letterLabel);
+				mainBoard.add(letterLabel);
 			}
 		}
 		
@@ -75,14 +80,55 @@ public class WordleUI extends JFrame {
 		addKeyListener(new KeyAdapter() {
 			public void keyTyped(KeyEvent e) {
 				char c = e.getKeyChar();
-				System.out.println("char: " + c);
-//				spaces[0][0].removeAll();
-//				spaces[0][0].add(tileMap.get(' '));
-//				spaces[0][0].add(tileMap.get(c));
-				repaint();
+				if (Character.isLetter(c) && !guessReady()) { // show the typed letter and add to guess
+					spaces[currRow][currCol].setTileLayers(tileMap.get(' '), 
+							tileMap.get(c));
+					pack();
+					repaint();
+					currCol++;
+					currentGuess.append(c);
+				}
+				else if (c == '\n' && guessReady()) { // submit guess
+					System.out.println("here");
+					String guessResult = wordle.guess(currentGuess.toString());
+					System.out.println(guessResult);
+					currentGuess.delete(0, currentGuess.length()); // clear current guess
+				}
+				// else if delete is pressed:
+				// TODO
+				
+//					spaces[currRow][currCol].add(new JLabel(tileMap.get(c).getImage()));
+//					pack();
+//					repaint();
+//
+//					else if (currRow >= Wordle.MAX_GUESSES - 1) { // ran out of guesses
+//						lose();
+//					}
+//					else {
+//						currCol++;
+//					}
+//				}
+//				else if (c == '\n') {
+//					
+//				}
 			}
 		});
 	}
+	
+	private boolean guessReady() { // true if the current row is full of letters
+		if ((currCol >= Wordle.WORD_LENGTH) && (currRow < Wordle.MAX_GUESSES)) { 
+			// no more letters can be typed in this guess and not out of guesses
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	
+	private void lose() {
+		System.out.println("You lose!");
+	}
+	
 	
 	public static void main(String[] args) {
 		JFrame frame = new WordleUI();
