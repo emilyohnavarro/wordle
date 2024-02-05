@@ -4,7 +4,9 @@ import javax.swing.ImageIcon;
 
 public enum TileLayer {
 	// maps enum to file name:
-	BLANK("blank.gif"), 
+	BLANK("blank.gif"),
+	GREEN("green.gif"),
+	YELLOW("yellow.gif"),
 	A("a.png"),
 	B("b.png"),
 	C("c.png"),

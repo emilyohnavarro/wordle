@@ -80,37 +80,28 @@ public class WordleUI extends JFrame {
 		addKeyListener(new KeyAdapter() {
 			public void keyTyped(KeyEvent e) {
 				char c = e.getKeyChar();
-				if (Character.isLetter(c) && !guessReady()) { // show the typed letter and add to guess
-					spaces[currRow][currCol].setTileLayers(tileMap.get(' '), 
-							tileMap.get(c));
-					pack();
-					repaint();
-					currCol++;
-					currentGuess.append(c);
+				if (!wordle.isGameOver()) {
+					if (Character.isLetter(c) && !guessReady()) { // show the typed letter and add to guess
+						spaces[currRow][currCol].setTileLayers(tileMap.get(' '), 
+								tileMap.get(c));
+						pack();
+						repaint();
+						currCol++;
+						currentGuess.append(c);
+					}
+					else if (c == '\n' && guessReady()) { // submit guess
+						submitGuess();
+					}
+					else if (c == '\b') { // delete pressed
+						if (currCol > 0) {
+							currCol--;
+							currentGuess.deleteCharAt(currentGuess.length() - 1);
+							spaces[currRow][currCol].setTileLayers(tileMap.get(' '), tileMap.get(' '));
+							pack();
+							repaint();
+						}
+					}
 				}
-				else if (c == '\n' && guessReady()) { // submit guess
-					System.out.println("here");
-					String guessResult = wordle.guess(currentGuess.toString());
-					System.out.println(guessResult);
-					currentGuess.delete(0, currentGuess.length()); // clear current guess
-				}
-				// else if delete is pressed:
-				// TODO
-				
-//					spaces[currRow][currCol].add(new JLabel(tileMap.get(c).getImage()));
-//					pack();
-//					repaint();
-//
-//					else if (currRow >= Wordle.MAX_GUESSES - 1) { // ran out of guesses
-//						lose();
-//					}
-//					else {
-//						currCol++;
-//					}
-//				}
-//				else if (c == '\n') {
-//					
-//				}
 			}
 		});
 	}
@@ -127,6 +118,28 @@ public class WordleUI extends JFrame {
 	
 	private void lose() {
 		System.out.println("You lose!");
+	}
+	
+	private void submitGuess() {
+		String guessResult = wordle.guess(currentGuess.toString());
+		System.out.println(guessResult);
+		for (int i=0; i<guessResult.length(); i++) {
+			char c = guessResult.charAt(i);
+			if (c == '*') {
+				spaces[currRow][currCol].setTileLayers(TileLayer.YELLOW, 
+						spaces[currRow][currCol].getForeground());
+			}
+			else if (c == '!') {
+				spaces[currRow][currCol].setTileLayers(TileLayer.GREEN, 
+						spaces[currRow][currCol].getForeground());
+			}
+		}
+		currentGuess.delete(0, currentGuess.length()); // clear current guess
+		currRow++;
+		currCol = 0;
+		if (wordle.isGameOver()) {
+			System.out.println(wordle.getGameStatus());
+		}
 	}
 	
 	

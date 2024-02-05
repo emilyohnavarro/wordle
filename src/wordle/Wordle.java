@@ -14,7 +14,7 @@ public class Wordle {
 	public static final int WORD_LENGTH = 5;
 	public static final int MAX_GUESSES = 6;
 	
-	private enum GameStatus {
+	public enum GameStatus {
 		IN_PROGRESS,
 		WIN,
 		LOSE
@@ -111,14 +111,16 @@ public class Wordle {
 			status = GameStatus.LOSE;
 			gameOver = true;
 		}
+		
+		return new String(result);
 
-		StringBuilder resultStr = new StringBuilder();
-		for (char c : result) {
-			resultStr.append(c);
-			resultStr.append(' ');
-		}
-		resultStr.deleteCharAt(resultStr.length() - 1);
-		return resultStr.toString();
+//		StringBuilder resultStr = new StringBuilder();
+//		for (char c : result) {
+//			resultStr.append(c);
+//			resultStr.append(' ');
+//		}
+//		resultStr.deleteCharAt(resultStr.length() - 1);
+//		return resultStr.toString();
 	}
 	
 	
@@ -130,7 +132,7 @@ public class Wordle {
 	
 	
 	public static void main(String[] args) {
-		Wordle game = new Wordle("bulky");
+		Wordle game = new Wordle("repel");
 		Scanner in = new Scanner(System.in);
 		while (!game.isGameOver()) {
 			System.out.print("Enter your guess: ");
