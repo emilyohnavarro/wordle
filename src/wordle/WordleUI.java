@@ -64,7 +64,6 @@ public class WordleUI extends JFrame {
 			for (int j = 0; j < spaces[0].length; j++) {
 				JLabel letterLabel = new JLabel(TileLayer.BLANK.getImage());
 				letterLabel.setLayout(new BorderLayout());
-//				letterLabel.add(new JLabel(TileLayer.E.getImage()));
 				spaces[i][j] = new VisibleTile(TileLayer.BLANK, TileLayer.BLANK, letterLabel);
 				mainBoard.add(letterLabel);
 			}
@@ -126,12 +125,18 @@ public class WordleUI extends JFrame {
 		for (int i=0; i<guessResult.length(); i++) {
 			char c = guessResult.charAt(i);
 			if (c == '*') {
-				spaces[currRow][currCol].setTileLayers(TileLayer.YELLOW, 
-						spaces[currRow][currCol].getForeground());
+				spaces[currRow][i].setTileLayers(TileLayer.YELLOW, 
+						spaces[currRow][i].getForeground());
+				System.out.println(spaces[currRow][i].getBackground());
+				System.out.println(spaces[currRow][i].getForeground());
+				System.out.println("currRow: " + currRow);
+				System.out.println("i: " + i);
+				pack();
+				repaint();
 			}
 			else if (c == '!') {
-				spaces[currRow][currCol].setTileLayers(TileLayer.GREEN, 
-						spaces[currRow][currCol].getForeground());
+				spaces[currRow][i].setTileLayers(TileLayer.GREEN, 
+						spaces[currRow][i].getForeground());
 			}
 		}
 		currentGuess.delete(0, currentGuess.length()); // clear current guess

@@ -1,5 +1,7 @@
 package wordle;
 
+import java.awt.BorderLayout;
+
 import javax.swing.JLabel;
 
 public class VisibleTile {
@@ -9,9 +11,8 @@ public class VisibleTile {
 	private JLabel label;
 	
 	public VisibleTile(TileLayer backgroundTile, TileLayer foregroundTile, JLabel label) {
-		this.backgroundTile = backgroundTile;
-		this.foregroundTile = foregroundTile;
 		this.label = label;
+		setTileLayers(backgroundTile, foregroundTile);
 	}
 	
 	public TileLayer getBackground() {
@@ -30,7 +31,8 @@ public class VisibleTile {
 		backgroundTile = background;
 		foregroundTile = foreground;
 		label.removeAll();
-		label.add(new JLabel(backgroundTile.getImage()));
+		label.setIcon(backgroundTile.getImage());
 		label.add(new JLabel(foregroundTile.getImage()));
+		label.revalidate();
 	}
 }
