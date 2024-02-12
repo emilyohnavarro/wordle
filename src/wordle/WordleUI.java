@@ -17,7 +17,7 @@ public class WordleUI extends JFrame {
 	private StringBuilder currentGuess;
 
 	public WordleUI() { // constructor
-		wordle = new Wordle("route");
+		wordle = new Wordle("pasta");
 		createTileMap();
 		createComponents();
 		currRow = currCol = 0;
@@ -78,7 +78,7 @@ public class WordleUI extends JFrame {
 	private void setupKeyListeners() {
 		addKeyListener(new KeyAdapter() {
 			public void keyTyped(KeyEvent e) {
-				char c = e.getKeyChar();
+				char c = Character.toLowerCase(e.getKeyChar());
 				if (!wordle.isGameOver()) {
 					if (Character.isLetter(c) && !guessReady()) { // show the typed letter and add to guess
 						spaces[currRow][currCol].setTileLayers(tileMap.get(' '), 
