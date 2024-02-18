@@ -9,15 +9,16 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class WordleUI extends JFrame {
-	private Map<Character, TileLayer> tileMap;
+	private Map<Character, CharLayer> tileMap;
 	private Wordle wordle;
 	private JPanel mainBoard;
-	private VisibleTile[][] spaces; // md array of spaces
+	private VisibleChar[][] spaces; // md array of spaces
 	private int currRow, currCol;
 	private StringBuilder currentGuess;
+	private Keyboard keyboard;
 
 	public WordleUI() { // constructor
-		wordle = new Wordle("pasta");
+		wordle = new Wordle("psalm");
 		createTileMap();
 		createComponents();
 		currRow = currCol = 0;
@@ -26,52 +27,58 @@ public class WordleUI extends JFrame {
 	
 	private void createTileMap() {
 		tileMap = new HashMap<>();
-		tileMap.put(' ', TileLayer.BLANK);
-		tileMap.put('a', TileLayer.A);
-		tileMap.put('b', TileLayer.B);
-		tileMap.put('c', TileLayer.C);
-		tileMap.put('d', TileLayer.D);
-		tileMap.put('e', TileLayer.E);
-		tileMap.put('f', TileLayer.F);
-		tileMap.put('g', TileLayer.G);
-		tileMap.put('h', TileLayer.H);
-		tileMap.put('i', TileLayer.I);
-		tileMap.put('j', TileLayer.J);
-		tileMap.put('k', TileLayer.K);
-		tileMap.put('l', TileLayer.L);
-		tileMap.put('m', TileLayer.M);
-		tileMap.put('n', TileLayer.N);
-		tileMap.put('o', TileLayer.O);
-		tileMap.put('p', TileLayer.P);
-		tileMap.put('q', TileLayer.Q);
-		tileMap.put('r', TileLayer.R);
-		tileMap.put('s', TileLayer.S);
-		tileMap.put('t', TileLayer.T);
-		tileMap.put('u', TileLayer.U);
-		tileMap.put('v', TileLayer.V);
-		tileMap.put('w', TileLayer.W);
-		tileMap.put('x', TileLayer.X);
-		tileMap.put('y', TileLayer.Y);
-		tileMap.put('z', TileLayer.Z);
+		tileMap.put(' ', CharLayer.BLANK);
+		tileMap.put('a', CharLayer.A);
+		tileMap.put('b', CharLayer.B);
+		tileMap.put('c', CharLayer.C);
+		tileMap.put('d', CharLayer.D);
+		tileMap.put('e', CharLayer.E);
+		tileMap.put('f', CharLayer.F);
+		tileMap.put('g', CharLayer.G);
+		tileMap.put('h', CharLayer.H);
+		tileMap.put('i', CharLayer.I);
+		tileMap.put('j', CharLayer.J);
+		tileMap.put('k', CharLayer.K);
+		tileMap.put('l', CharLayer.L);
+		tileMap.put('m', CharLayer.M);
+		tileMap.put('n', CharLayer.N);
+		tileMap.put('o', CharLayer.O);
+		tileMap.put('p', CharLayer.P);
+		tileMap.put('q', CharLayer.Q);
+		tileMap.put('r', CharLayer.R);
+		tileMap.put('s', CharLayer.S);
+		tileMap.put('t', CharLayer.T);
+		tileMap.put('u', CharLayer.U);
+		tileMap.put('v', CharLayer.V);
+		tileMap.put('w', CharLayer.W);
+		tileMap.put('x', CharLayer.X);
+		tileMap.put('y', CharLayer.Y);
+		tileMap.put('z', CharLayer.Z);
 	}
 	
 	private void createComponents() {
+		// main board (grid):
 		mainBoard = new JPanel();
 		mainBoard.setLayout(new GridLayout(Wordle.MAX_GUESSES, Wordle.WORD_LENGTH, 4, 4));
 		
 		spaces = new VisibleTile[Wordle.MAX_GUESSES][Wordle.WORD_LENGTH];
 		for (int i = 0; i < spaces.length; i++) {
 			for (int j = 0; j < spaces[0].length; j++) {
-				JLabel letterLabel = new JLabel(TileLayer.BLANK.getImage());
+				JLabel letterLabel = new JLabel(CharLayer.BLANK.getTileImage());
 				letterLabel.setLayout(new BorderLayout());
-				spaces[i][j] = new VisibleTile(TileLayer.BLANK, TileLayer.BLANK, letterLabel);
+				spaces[i][j] = new VisibleTile(CharLayer.BLANK, CharLayer.BLANK, letterLabel);
 				mainBoard.add(letterLabel);
 			}
 		}
 		
+		// keyboard:
+		keyboard = new Keyboard();
+		
 		setupKeyListeners();
-		add(mainBoard);
-		setTitle("Wordle");
+		setLayout(new BorderLayout());
+		add(mainBoard, BorderLayout.CENTER);
+		add(keyboard, BorderLayout.SOUTH);
+		setTitle("Emily's Wordle");
 		pack();
 	}
 	
@@ -81,7 +88,7 @@ public class WordleUI extends JFrame {
 				char c = Character.toLowerCase(e.getKeyChar());
 				if (!wordle.isGameOver()) {
 					if (Character.isLetter(c) && !guessReady()) { // show the typed letter and add to guess
-						spaces[currRow][currCol].setTileLayers(tileMap.get(' '), 
+						spaces[currRow][currCol].setCharLayers(tileMap.get(' '), 
 								tileMap.get(c));
 						pack();
 						repaint();
@@ -95,7 +102,7 @@ public class WordleUI extends JFrame {
 						if (currCol > 0) {
 							currCol--;
 							currentGuess.deleteCharAt(currentGuess.length() - 1);
-							spaces[currRow][currCol].setTileLayers(tileMap.get(' '), tileMap.get(' '));
+							spaces[currRow][currCol].setCharLayers(tileMap.get(' '), tileMap.get(' '));
 							pack();
 							repaint();
 						}
@@ -125,7 +132,7 @@ public class WordleUI extends JFrame {
 		for (int i=0; i<guessResult.length(); i++) {
 			char c = guessResult.charAt(i);
 			if (c == '*') {
-				spaces[currRow][i].setTileLayers(TileLayer.YELLOW, 
+				spaces[currRow][i].setCharLayers(CharLayer.YELLOW, 
 						spaces[currRow][i].getForeground());
 				System.out.println(spaces[currRow][i].getBackground());
 				System.out.println(spaces[currRow][i].getForeground());
@@ -135,7 +142,7 @@ public class WordleUI extends JFrame {
 				repaint();
 			}
 			else if (c == '!') {
-				spaces[currRow][i].setTileLayers(TileLayer.GREEN, 
+				spaces[currRow][i].setCharLayers(CharLayer.GREEN, 
 						spaces[currRow][i].getForeground());
 			}
 		}
