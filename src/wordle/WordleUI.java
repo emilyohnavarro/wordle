@@ -18,7 +18,7 @@ public class WordleUI extends JFrame {
 	private Keyboard keyboard;
 
 	public WordleUI() { // constructor
-		wordle = new Wordle("psalm");
+		wordle = new Wordle("teary");
 		createTileMap();
 		createComponents();
 		currRow = currCol = 0;
@@ -131,7 +131,7 @@ public class WordleUI extends JFrame {
 		System.out.println(guessResult);
 		for (int i=0; i<guessResult.length(); i++) {
 			char c = guessResult.charAt(i);
-			if (c == '*') {
+			if (c == '*') { // right letter, wrong place
 				spaces[currRow][i].setCharLayers(CharLayer.YELLOW, 
 						spaces[currRow][i].getForeground());
 				System.out.println(spaces[currRow][i].getBackground());
@@ -141,8 +141,12 @@ public class WordleUI extends JFrame {
 				pack();
 				repaint();
 			}
-			else if (c == '!') {
+			else if (c == '!') { // right letter, right place
 				spaces[currRow][i].setCharLayers(CharLayer.GREEN, 
+						spaces[currRow][i].getForeground());
+			}
+			else { // letter not in word
+				spaces[currRow][i].setCharLayers(CharLayer.GREY, 
 						spaces[currRow][i].getForeground());
 			}
 		}

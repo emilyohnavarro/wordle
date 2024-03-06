@@ -132,7 +132,7 @@ public class Wordle {
 	
 	
 	public static void main(String[] args) {
-		Wordle game = new Wordle("psalm");
+		Wordle game = new Wordle("ridge");
 		Scanner in = new Scanner(System.in);
 		while (!game.isGameOver()) {
 			System.out.print("Enter your guess: ");

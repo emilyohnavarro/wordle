@@ -13,7 +13,7 @@ public class Keyboard extends JPanel {
 	
 	public Keyboard() {
 		createKeyMap();
-		setLayout(new GridLayout(3, 1));
+		setLayout(new GridLayout(3, 1, 2, 2));
 		JPanel topRow = new JPanel();
 		JLabel q = new JLabel(new ImageIcon("res/q-key.png"));
 		topRow.add(q);
@@ -46,6 +46,34 @@ public class Keyboard extends JPanel {
 		middleRow.add(d);
 		JLabel f = new JLabel(new ImageIcon("res/f-key.png"));
 		middleRow.add(f);
+		JLabel g = new JLabel(new ImageIcon("res/g-key.png"));
+		middleRow.add(g);
+		JLabel h = new JLabel(new ImageIcon("res/h-key.png"));
+		middleRow.add(h);
+		JLabel j = new JLabel(new ImageIcon("res/j-key.png"));
+		middleRow.add(j);
+		JLabel k = new JLabel(new ImageIcon("res/k-key.png"));
+		middleRow.add(k);
+		JLabel l = new JLabel(new ImageIcon("res/l-key.png"));
+		middleRow.add(l);
+		add(middleRow);
+		
+		JPanel bottomRow = new JPanel();
+		JLabel z = new JLabel(new ImageIcon("res/z-key.png"));
+		bottomRow.add(z);
+		JLabel x = new JLabel(new ImageIcon("res/x-key.png"));
+		bottomRow.add(x);
+		JLabel c = new JLabel(new ImageIcon("res/c-key.png"));
+		bottomRow.add(c);
+		JLabel v = new JLabel(new ImageIcon("res/v-key.png"));
+		bottomRow.add(v);
+		JLabel b = new JLabel(new ImageIcon("res/b-key.png"));
+		bottomRow.add(b);
+		JLabel n = new JLabel(new ImageIcon("res/n-key.png"));
+		bottomRow.add(n);
+		JLabel m = new JLabel(new ImageIcon("res/m-key.png"));
+		bottomRow.add(m);
+		add(bottomRow);
 	}
 	
 	private void createKeyMap() {

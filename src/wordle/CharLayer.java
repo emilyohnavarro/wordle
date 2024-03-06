@@ -10,6 +10,7 @@ public enum CharLayer {
 	BLANK("blank.gif", "blank-key.gif"),
 	GREEN("green.gif", "green-key.gif"),
 	YELLOW("yellow.gif", "yellow-key.gif"),
+	GREY("grey.gif", "grey-key.gif"),
 	A("a.png", "a-key.png"),
 	B("b.png", "b-key.png"),
 	C("c.png", "c-key.png"),
