@@ -113,14 +113,6 @@ public class Wordle {
 		}
 		
 		return new String(result);
-
-//		StringBuilder resultStr = new StringBuilder();
-//		for (char c : result) {
-//			resultStr.append(c);
-//			resultStr.append(' ');
-//		}
-//		resultStr.deleteCharAt(resultStr.length() - 1);
-//		return resultStr.toString();
 	}
 	
 	
