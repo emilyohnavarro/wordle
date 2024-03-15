@@ -4,6 +4,11 @@ import javax.swing.*;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.io.IOException;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -18,8 +23,7 @@ public class WordleUI extends JFrame {
 	private Keyboard keyboard;
 
 	public WordleUI() { // constructor
-		wordle = new Wordle("heave");
-//		createTileMap();
+		wordle = new Wordle("since");
 		tileMap = CharLayer.charLayerMap;
 		createComponents();
 		currRow = currCol = 0;
@@ -151,5 +155,21 @@ public class WordleUI extends JFrame {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
+		
+		HttpRequest request = HttpRequest.newBuilder()
+				.uri(URI.create("https://api.wordnik.com/v4/words.json/randomWord?hasDictionaryDef=true&maxCorpusCount=-1&minDictionaryCount=1&maxDictionaryCount=-1&minLength=5&maxLength=5&api_key=8lb16cjwsd42tng7lopt6oopvh8ul2exzg6l80upupffo8ihj"))
+//				.header("X-RapidAPI-Host", "jokes-by-api-ninjas.p.rapidapi.com")
+//				.header("X-RapidAPI-Key", "x-rapidapi-key")
+				.method("GET", HttpRequest.BodyPublishers.noBody())
+				.build();
+		HttpResponse<String> response = null;
+		try {
+			response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		System.out.println(response.body());
 	}
 }

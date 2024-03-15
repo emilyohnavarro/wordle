@@ -1,5 +1,6 @@
 package wordle;
 
+import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 
 public abstract class VisibleChar {
@@ -33,5 +34,17 @@ public abstract class VisibleChar {
 		return label;
 	}
 	
-	public abstract void setCharLayers(CharLayer background, CharLayer foreground);
+	public abstract ImageIcon getBackgroundImage();
+	
+	public abstract ImageIcon getForegroundImage();
+	
+	public void setCharLayers(CharLayer background, CharLayer foreground) {
+		setBackground(background);
+		setForeground(foreground);
+		JLabel label = getLabel();
+		label.removeAll();
+		label.setIcon(getBackgroundImage());
+		label.add(new JLabel(getForegroundImage()));
+		label.revalidate();
+	}
 }

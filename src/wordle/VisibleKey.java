@@ -1,5 +1,6 @@
 package wordle;
 
+import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 
 public class VisibleKey extends VisibleChar {
@@ -8,13 +9,11 @@ public class VisibleKey extends VisibleChar {
 		super(background, foreground, label);
 	}
 	
-	public void setCharLayers(CharLayer background, CharLayer foreground) {
-		setBackground(background);
-		setForeground(foreground);
-		JLabel label = getLabel();
-		label.removeAll();
-		label.setIcon(background.getKeyImage());
-		label.add(new JLabel(foreground.getKeyImage()));
-		label.revalidate();
+	public ImageIcon getBackgroundImage() {
+		return getBackground().getKeyImage();
+	}
+	
+	public ImageIcon getForegroundImage() {
+		return getForeground().getKeyImage();
 	}
 }
