@@ -157,7 +157,7 @@ public class WordleUI extends JFrame {
 		frame.setVisible(true);
 		
 		HttpRequest request = HttpRequest.newBuilder()
-				.uri(URI.create("https://api.wordnik.com/v4/words.json/randomWord?hasDictionaryDef=true&maxCorpusCount=-1&minDictionaryCount=1&maxDictionaryCount=-1&minLength=5&maxLength=5&api_key=8lb16cjwsd42tng7lopt6oopvh8ul2exzg6l80upupffo8ihj"))
+				.uri(URI.create("https://api.wordnik.com/v4/words.json/randomWord?hasDictionaryDef=true&includePartOfSpeech=noun%2Cadjective%2Cverb%2Cadverb%2Cnoun-plural&minCorpusCount=1000&minDictionaryCount=5&minLength=5&maxLength=5&api_key=8lb16cjwsd42tng7lopt6oopvh8ul2exzg6l80upupffo8ihj"))
 //				.header("X-RapidAPI-Host", "jokes-by-api-ninjas.p.rapidapi.com")
 //				.header("X-RapidAPI-Key", "x-rapidapi-key")
 				.method("GET", HttpRequest.BodyPublishers.noBody())
