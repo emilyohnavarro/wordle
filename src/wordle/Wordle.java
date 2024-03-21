@@ -1,6 +1,12 @@
 package wordle;
 
-import java.util.Scanner;
+import java.io.IOException;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+
+import org.json.JSONObject;
 
 public class Wordle {
 	private boolean gameOver;
@@ -27,9 +33,44 @@ public class Wordle {
 	}
 	
 	public Wordle(String target) {
+		this.target = target;
+		initGame();
+	}
+	
+	public Wordle() {
+		fetchTarget();
+		initGame();
+	}
+	
+	private void fetchTarget() {
+		String word = "";
+		do {
+			HttpRequest request = HttpRequest.newBuilder()
+					.uri(URI.create("https://api.wordnik.com/v4/words.json/randomWord?hasDictionaryDef=true&includePartOfSpeech=noun%2Cadjective%2Cverb%2Cadverb%2Cnoun-plural&minCorpusCount=1000&minDictionaryCount=5&minLength=5&maxLength=5&api_key=8lb16cjwsd42tng7lopt6oopvh8ul2exzg6l80upupffo8ihj"))
+//					.header("X-RapidAPI-Host", "jokes-by-api-ninjas.p.rapidapi.com")
+//					.header("X-RapidAPI-Key", "x-rapidapi-key")
+					.method("GET", HttpRequest.BodyPublishers.noBody())
+					.build();
+			HttpResponse<String> response = null;
+			try {
+				response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
+			} catch (IOException e) {
+				e.printStackTrace();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			System.out.println(response.body());
+			JSONObject jsonObj = new JSONObject(response.body());
+			word = (String)jsonObj.get("word");
+			System.out.println("word: " + word);
+		}
+		while (Character.isUpperCase(word.charAt(0))); // ignore proper nouns
+		target = word;
+	}
+	
+	private void initGame() {
 		gameOver = false;
 		numGuesses = 0;
-		this.target = target;
 		status = GameStatus.IN_PROGRESS;
 		currentGuess = new LetterStatus[WORD_LENGTH];
 	}
@@ -123,13 +164,13 @@ public class Wordle {
 	}
 	
 	
-	public static void main(String[] args) {
-		Wordle game = new Wordle("ridge");
-		Scanner in = new Scanner(System.in);
-		while (!game.isGameOver()) {
-			System.out.print("Enter your guess: ");
-			System.out.println(game.guess(in.next()));
-		}
-		System.out.println("GAME OVER. YOU " + game.getGameStatus());
-	}
+//	public static void main(String[] args) {
+//		Wordle game = new Wordle("ridge");
+//		Scanner in = new Scanner(System.in);
+//		while (!game.isGameOver()) {
+//			System.out.print("Enter your guess: ");
+//			System.out.println(game.guess(in.next()));
+//		}
+//		System.out.println("GAME OVER. YOU " + game.getGameStatus());
+//	}
 }
