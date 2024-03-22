@@ -90,55 +90,58 @@ public class WordleUI extends JFrame {
 		}
 	}
 	
-	private void lose() {
-		System.out.println("You lose!");
-	}
-	
 	private void submitGuess() {
 		String guessResult = wordle.guess(currentGuess.toString());
 //		System.out.println(guessResult);
-		for (int i=0; i<guessResult.length(); i++) {
-			char resultChar = guessResult.charAt(i);
-			char guessChar = currentGuess.charAt(i);
-			VisibleKey key = keyboard.keyMap.get(guessChar);
-			if (resultChar == '*') { // right letter, wrong place
-				
-				// set tile background:
-				spaces[currRow][i].setCharLayers(CharLayer.YELLOW, 
-						spaces[currRow][i].getForeground());
-				
-				// set key background:
-				key.setCharLayers(CharLayer.YELLOW, key.getForeground());
-				
-//				System.out.println(spaces[currRow][i].getBackground());
-//				System.out.println(spaces[currRow][i].getForeground());
-//				System.out.println("currRow: " + currRow);
-//				System.out.println("i: " + i);
-				pack();
-				repaint();
-			}
-			else if (resultChar == '!') { // right letter, right place
-				// set tile background:
-				spaces[currRow][i].setCharLayers(CharLayer.GREEN, 
-						spaces[currRow][i].getForeground());
-				
-				// set key background:
-				key.setCharLayers(CharLayer.GREEN, key.getForeground());
-			}
-			else { // letter not in word
-				// set tile background:
-				spaces[currRow][i].setCharLayers(CharLayer.GREY, 
-						spaces[currRow][i].getForeground());
-				
-				// set key background:
-				key.setCharLayers(CharLayer.GREY, key.getForeground());
-			}
+		if (guessResult.equals(Wordle.INVALID_GUESS_RESULT)) {
+			JOptionPane.showMessageDialog(this, ("Invalid word"), 
+					"Warning", JOptionPane.WARNING_MESSAGE);
 		}
-		currentGuess.delete(0, currentGuess.length()); // clear current guess
-		currRow++;
-		currCol = 0;
-		if (wordle.isGameOver()) {
-			System.out.println(wordle.getGameStatus());
+		else {
+			for (int i=0; i<guessResult.length(); i++) {
+				char resultChar = guessResult.charAt(i);
+				char guessChar = currentGuess.charAt(i);
+				VisibleKey key = keyboard.keyMap.get(guessChar);
+				if (resultChar == '*') { // right letter, wrong place
+					
+					// set tile background:
+					spaces[currRow][i].setCharLayers(CharLayer.YELLOW, 
+							spaces[currRow][i].getForeground());
+					
+					// set key background:
+					key.setCharLayers(CharLayer.YELLOW, key.getForeground());
+					
+	//				System.out.println(spaces[currRow][i].getBackground());
+	//				System.out.println(spaces[currRow][i].getForeground());
+	//				System.out.println("currRow: " + currRow);
+	//				System.out.println("i: " + i);
+					pack();
+					repaint();
+				}
+				else if (resultChar == '!') { // right letter, right place
+					// set tile background:
+					spaces[currRow][i].setCharLayers(CharLayer.GREEN, 
+							spaces[currRow][i].getForeground());
+					
+					// set key background:
+					key.setCharLayers(CharLayer.GREEN, key.getForeground());
+				}
+				else { // letter not in word
+					// set tile background:
+					spaces[currRow][i].setCharLayers(CharLayer.GREY, 
+							spaces[currRow][i].getForeground());
+					
+					// set key background:
+					key.setCharLayers(CharLayer.GREY, key.getForeground());
+				}
+			}
+			currentGuess.delete(0, currentGuess.length()); // clear current guess
+			currRow++;
+			currCol = 0;
+			if (wordle.isGameOver()) {
+				JOptionPane.showMessageDialog(this, ("YOU " + wordle.getGameStatus()), 
+						"Game over", JOptionPane.PLAIN_MESSAGE);
+			}
 		}
 	}
 	

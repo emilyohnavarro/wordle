@@ -19,6 +19,7 @@ public class Wordle {
 	
 	public static final int WORD_LENGTH = 5;
 	public static final int MAX_GUESSES = 6;
+	public static final String INVALID_GUESS_RESULT = "INVALID";
 	
 	public enum GameStatus {
 		IN_PROGRESS,
@@ -59,7 +60,7 @@ public class Wordle {
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-			System.out.println(response.body());
+//			System.out.println(response.body());
 			JSONObject jsonObj = new JSONObject(response.body());
 			word = (String)jsonObj.get("word");
 			System.out.println("word: " + word);
@@ -102,58 +103,63 @@ public class Wordle {
 	 */
 	public String guess(String guess) {
 		resetCurrentGuess();
-		char[] result = new char[WORD_LENGTH];
-		for (int i=0; i<result.length; i++) {
-			result[i] = '_';
+		if (!isValidWord(guess)) {
+			return INVALID_GUESS_RESULT;
 		}
-		
-		// first pass through to look for right letter in right spot:
-		for (int i=0; i<guess.length(); i++) {
-			if (guess.charAt(i) == target.charAt(i)) { // right letter, right spot
-				result[i] = '!';
-				currentGuess[i] = LetterStatus.RIGHT_SPOT;
+		else {
+			char[] result = new char[WORD_LENGTH];
+			for (int i=0; i<result.length; i++) {
+				result[i] = '_';
 			}
-		}
-		
-//		System.out.println(result);
-//		for (LetterStatus g : currentGuess) {
-//			System.out.print(g + " ");
-//		}
-		
-		// second pass to look for right letter in wrong spot:
-		for (int i=0; i<guess.length(); i++) {
-			goThruTarget: for (int j=0; j<target.length(); j++) {
-				if ((guess.charAt(i) == target.charAt(j)) &&
-						(currentGuess[i] != LetterStatus.RIGHT_SPOT) &&
-						(currentGuess[j] == LetterStatus.NOT_COUNTED)) {
-					result[i] = '*';
-					currentGuess[j] = LetterStatus.WRONG_SPOT;
-					break goThruTarget;
+			
+			// first pass through to look for right letter in right spot:
+			for (int i=0; i<guess.length(); i++) {
+				if (guess.charAt(i) == target.charAt(i)) { // right letter, right spot
+					result[i] = '!';
+					currentGuess[i] = LetterStatus.RIGHT_SPOT;
 				}
 			}
-		}
-		
-		numGuesses++;
-		
-		// check if game is over:
-		boolean win = true;
-		for (char c : result) {
-			if (c == '_' || c == '*') {
-				gameOver = false;
-				win = false;
-				break;
+			
+	//		System.out.println(result);
+	//		for (LetterStatus g : currentGuess) {
+	//			System.out.print(g + " ");
+	//		}
+			
+			// second pass to look for right letter in wrong spot:
+			for (int i=0; i<guess.length(); i++) {
+				goThruTarget: for (int j=0; j<target.length(); j++) {
+					if ((guess.charAt(i) == target.charAt(j)) &&
+							(currentGuess[i] != LetterStatus.RIGHT_SPOT) &&
+							(currentGuess[j] == LetterStatus.NOT_COUNTED)) {
+						result[i] = '*';
+						currentGuess[j] = LetterStatus.WRONG_SPOT;
+						break goThruTarget;
+					}
+				}
 			}
+			
+			numGuesses++;
+			
+			// check if game is over:
+			boolean win = true;
+			for (char c : result) {
+				if (c == '_' || c == '*') {
+					gameOver = false;
+					win = false;
+					break;
+				}
+			}
+			if (win) {
+				status = GameStatus.WIN;
+				gameOver = true;
+			}
+			else if (numGuesses == MAX_GUESSES) {
+				status = GameStatus.LOSE;
+				gameOver = true;
+			}
+			
+			return new String(result);
 		}
-		if (win) {
-			status = GameStatus.WIN;
-			gameOver = true;
-		}
-		else if (numGuesses == MAX_GUESSES) {
-			status = GameStatus.LOSE;
-			gameOver = true;
-		}
-		
-		return new String(result);
 	}
 	
 	
@@ -161,6 +167,23 @@ public class Wordle {
 		for (int i=0; i<currentGuess.length; i++) {
 			currentGuess[i] = LetterStatus.NOT_COUNTED;
 		}
+	}
+	
+	private boolean isValidWord(String word) {
+		HttpRequest request = HttpRequest.newBuilder()
+				.uri(URI.create("https://api.wordnik.com/v4/word.json/" + word + "/definitions?limit=1&includeRelated=false&sourceDictionaries=webster&useCanonical=false&includeTags=false&api_key=8lb16cjwsd42tng7lopt6oopvh8ul2exzg6l80upupffo8ihj"))
+				.method("GET", HttpRequest.BodyPublishers.noBody())
+				.build();
+		HttpResponse<String> response = null;
+		try {
+			response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+//		System.out.println(response.body());
+		return (response.statusCode() == 200);
 	}
 	
 	
