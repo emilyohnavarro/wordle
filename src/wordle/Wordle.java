@@ -5,7 +5,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-
+import io.github.cdimascio.dotenv.Dotenv;
 import org.json.JSONObject;
 
 public class Wordle {
@@ -16,6 +16,7 @@ public class Wordle {
 	private LetterStatus[] currentGuess; // keeps track of which letters in the target 
 									// have already been accounted for in the result string
 									// for the current guess
+	private String apiKey;
 	
 	public static final int WORD_LENGTH = 5;
 	public static final int MAX_GUESSES = 6;
@@ -35,19 +36,27 @@ public class Wordle {
 	
 	public Wordle(String target) {
 		this.target = target;
+		loadApiKey();
 		initGame();
 	}
 	
 	public Wordle() {
+		loadApiKey();
 		fetchTarget();
 		initGame();
+	}
+	
+	private void loadApiKey() {
+		Dotenv dotenv = Dotenv.load();
+		apiKey = dotenv.get("API_KEY");
+		System.out.println("key: " + apiKey);
 	}
 	
 	private void fetchTarget() {
 		String word = "";
 		do {
 			HttpRequest request = HttpRequest.newBuilder()
-					.uri(URI.create("https://api.wordnik.com/v4/words.json/randomWord?hasDictionaryDef=true&includePartOfSpeech=noun%2Cadjective%2Cverb%2Cadverb%2Cnoun-plural&minCorpusCount=1000&minDictionaryCount=5&minLength=5&maxLength=5&api_key=8lb16cjwsd42tng7lopt6oopvh8ul2exzg6l80upupffo8ihj"))
+					.uri(URI.create("https://api.wordnik.com/v4/words.json/randomWord?hasDictionaryDef=true&includePartOfSpeech=noun%2Cadjective%2Cverb%2Cadverb%2Cnoun-plural&minCorpusCount=1000&minDictionaryCount=5&minLength=5&maxLength=5&api_key=" + apiKey))
 //					.header("X-RapidAPI-Host", "jokes-by-api-ninjas.p.rapidapi.com")
 //					.header("X-RapidAPI-Key", "x-rapidapi-key")
 					.method("GET", HttpRequest.BodyPublishers.noBody())
@@ -171,7 +180,7 @@ public class Wordle {
 	
 	private boolean isValidWord(String word) {
 		HttpRequest request = HttpRequest.newBuilder()
-				.uri(URI.create("https://api.wordnik.com/v4/word.json/" + word + "/definitions?limit=1&includeRelated=false&sourceDictionaries=webster&useCanonical=false&includeTags=false&api_key=8lb16cjwsd42tng7lopt6oopvh8ul2exzg6l80upupffo8ihj"))
+				.uri(URI.create("https://api.wordnik.com/v4/word.json/" + word + "/definitions?limit=1&includeRelated=false&sourceDictionaries=all&useCanonical=false&includeTags=false&api_key=" + apiKey))
 				.method("GET", HttpRequest.BodyPublishers.noBody())
 				.build();
 		HttpResponse<String> response = null;
