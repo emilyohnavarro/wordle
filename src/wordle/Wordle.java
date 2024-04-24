@@ -17,6 +17,7 @@ public class Wordle {
 									// have already been accounted for in the result string
 									// for the current guess
 	private String apiKey;
+	private Stats stats;
 	
 	public static final int WORD_LENGTH = 5;
 	public static final int MAX_GUESSES = 6;
@@ -57,8 +58,6 @@ public class Wordle {
 		do {
 			HttpRequest request = HttpRequest.newBuilder()
 					.uri(URI.create("https://api.wordnik.com/v4/words.json/randomWord?hasDictionaryDef=true&includePartOfSpeech=noun%2Cadjective%2Cverb%2Cadverb%2Cnoun-plural&minCorpusCount=1000&minDictionaryCount=5&minLength=5&maxLength=5&api_key=" + apiKey))
-//					.header("X-RapidAPI-Host", "jokes-by-api-ninjas.p.rapidapi.com")
-//					.header("X-RapidAPI-Key", "x-rapidapi-key")
 					.method("GET", HttpRequest.BodyPublishers.noBody())
 					.build();
 			HttpResponse<String> response = null;
@@ -83,6 +82,7 @@ public class Wordle {
 		numGuesses = 0;
 		status = GameStatus.IN_PROGRESS;
 		currentGuess = new LetterStatus[WORD_LENGTH];
+		stats = new Stats();
 	}
 	
 	
@@ -160,15 +160,23 @@ public class Wordle {
 			}
 			if (win) {
 				status = GameStatus.WIN;
-				gameOver = true;
+//				System.out.println("numGuesses: " + numGuesses);
+				stats.gameWon(numGuesses);
+				endGame();
 			}
 			else if (numGuesses == MAX_GUESSES) {
 				status = GameStatus.LOSE;
-				gameOver = true;
+				stats.gameLost();
+				endGame();
 			}
 			
 			return new String(result);
 		}
+	}
+	
+	private void endGame() {
+		gameOver = true;
+		stats.printStats();
 	}
 	
 	
@@ -194,15 +202,4 @@ public class Wordle {
 //		System.out.println(response.body());
 		return (response.statusCode() == 200);
 	}
-	
-	
-//	public static void main(String[] args) {
-//		Wordle game = new Wordle("ridge");
-//		Scanner in = new Scanner(System.in);
-//		while (!game.isGameOver()) {
-//			System.out.print("Enter your guess: ");
-//			System.out.println(game.guess(in.next()));
-//		}
-//		System.out.println("GAME OVER. YOU " + game.getGameStatus());
-//	}
 }
