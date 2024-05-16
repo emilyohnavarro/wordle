@@ -2,8 +2,11 @@ package wordle;
 
 import javax.swing.*;
 
+import wordle.Wordle.GameStatus;
+
 import java.awt.*;
 import java.awt.event.*;
+import java.io.File;
 import java.util.Map;
 
 public class WordleUI extends JFrame {
@@ -15,8 +18,8 @@ public class WordleUI extends JFrame {
 	private StringBuilder currentGuess;
 	private Keyboard keyboard;
 
-	public WordleUI() { // constructor
-		wordle = new Wordle();
+	public WordleUI(String dbPropsFilename) throws Exception { // constructor
+		wordle = new Wordle(dbPropsFilename);
 		tileMap = CharLayer.charLayerMap;
 		createComponents();
 		currRow = currCol = 0;
@@ -139,15 +142,25 @@ public class WordleUI extends JFrame {
 			currRow++;
 			currCol = 0;
 			if (wordle.isGameOver()) {
-				JOptionPane.showMessageDialog(this, ("YOU " + wordle.getGameStatus()), 
+				GameStatus gameStatus = wordle.getGameStatus();
+				String message = (gameStatus == GameStatus.WIN) ? 
+						gameStatus.toString() : 
+							(wordle.getGameStatus() + ". The word was " + wordle.getTarget().toUpperCase() + ".");
+				JOptionPane.showMessageDialog(this, ("YOU " + message), 
 						"Game over", JOptionPane.PLAIN_MESSAGE);
 			}
 		}
 	}
 	
 	
-	public static void main(String[] args) {
-		JFrame frame = new WordleUI();
+	public static void main(String[] args) throws Exception {
+		if (args.length == 0) {
+			System.out.println(
+					"Usage: java -classpath driver_class_path" + File.pathSeparator + ". TestDB propertiesFile");
+			return;
+		}
+		SimpleDataSource.init(args[0]);
+		JFrame frame = new WordleUI(args[0]);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);

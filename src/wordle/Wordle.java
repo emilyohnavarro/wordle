@@ -35,22 +35,16 @@ public class Wordle {
 		NOT_COUNTED
 	}
 	
-	public Wordle(String target) {
-		this.target = target;
-		loadApiKey();
-		initGame();
-	}
-	
-	public Wordle() {
+	public Wordle(String dbPropsFilename) throws Exception {
 		loadApiKey();
 		fetchTarget();
-		initGame();
+		initGame(dbPropsFilename);
 	}
 	
 	private void loadApiKey() {
 		Dotenv dotenv = Dotenv.load();
 		apiKey = dotenv.get("API_KEY");
-		System.out.println("key: " + apiKey);
+//		System.out.println("key: " + apiKey);
 	}
 	
 	private void fetchTarget() {
@@ -77,12 +71,17 @@ public class Wordle {
 		target = word;
 	}
 	
-	private void initGame() {
+	private void initGame(String dbPropsFilename) throws Exception {
 		gameOver = false;
 		numGuesses = 0;
 		status = GameStatus.IN_PROGRESS;
 		currentGuess = new LetterStatus[WORD_LENGTH];
-		stats = new Stats();
+		stats = new Stats(dbPropsFilename);
+	}
+	
+	
+	public String getTarget() {
+		return target;
 	}
 	
 	
