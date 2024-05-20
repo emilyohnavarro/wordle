@@ -6,6 +6,8 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import io.github.cdimascio.dotenv.Dotenv;
+
+import org.json.JSONException;
 import org.json.JSONObject;
 
 public class Wordle {
@@ -49,6 +51,7 @@ public class Wordle {
 	
 	private void fetchTarget() {
 		String word = "";
+		boolean exceptionThrown = false;
 		do {
 			HttpRequest request = HttpRequest.newBuilder()
 					.uri(URI.create("https://api.wordnik.com/v4/words.json/randomWord?hasDictionaryDef=true&includePartOfSpeech=noun%2Cadjective%2Cverb%2Cadverb%2Cnoun-plural&minCorpusCount=1000&minDictionaryCount=5&minLength=5&maxLength=5&api_key=" + apiKey))
@@ -64,10 +67,16 @@ public class Wordle {
 			}
 //			System.out.println(response.body());
 			JSONObject jsonObj = new JSONObject(response.body());
-			word = (String)jsonObj.get("word");
-			System.out.println("word: " + word);
+			
+			try {
+				word = (String)jsonObj.get("word");
+//				System.out.println("word: " + word);
+				exceptionThrown = false;
+			} catch (JSONException e) {
+				exceptionThrown = true;
+			}
 		}
-		while (Character.isUpperCase(word.charAt(0))); // ignore proper nouns
+		while (exceptionThrown || word.length() == 0 || Character.isUpperCase(word.charAt(0))); // ignore proper nouns
 		target = word;
 	}
 	
