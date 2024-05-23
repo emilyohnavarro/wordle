@@ -7,6 +7,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import io.github.cdimascio.dotenv.Dotenv;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -195,6 +196,7 @@ public class Wordle {
 	}
 	
 	private boolean isValidWord(String word) {
+		boolean valid;
 		HttpRequest request = HttpRequest.newBuilder()
 				.uri(URI.create("https://api.wordnik.com/v4/word.json/" + word + "/definitions?limit=1&includeRelated=false&sourceDictionaries=all&useCanonical=false&includeTags=false&api_key=" + apiKey))
 				.method("GET", HttpRequest.BodyPublishers.noBody())
@@ -202,12 +204,24 @@ public class Wordle {
 		HttpResponse<String> response = null;
 		try {
 			response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
+//			System.out.println(response);
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+		JSONArray jsonArray = new JSONArray(response.body());
+		
+		try {
+			JSONObject jsonObj = jsonArray.getJSONObject(0);
+			jsonObj.get("id");
+			valid = true; // if the returned JSON object has an ID, that means it's a valid word
+//			System.out.println("word: " + word);
+		} catch (JSONException e) {
+			valid = false; // if the returned JSON object does not have an ID, that means it's not a valid word
+		}
 //		System.out.println(response.body());
-		return (response.statusCode() == 200);
+//		return (response.statusCode() == 200);
+		return valid;
 	}
 }
