@@ -66,14 +66,16 @@ public class Stats {
 	}
 
 
-	public void printStats() {
-		System.out.println("Games played: " + numGamesPlayed);
+	public String getStats() {
+		StringBuilder stats = new StringBuilder();
+		stats.append("Games played: " + numGamesPlayed + '\n');
 		double percentWon = (double) numWins / (double) numGamesPlayed * 100.0;
-		System.out.println("% won: " + Math.round(percentWon));
-		System.out.println("Guess distribution:");
+		stats.append("% won: " + Math.round(percentWon) + '\n');
+		stats.append("Guess distribution:" + '\n');
 		for (int i = 0; i < guessDistribution.length; i++) {
-			System.out.println((i + 1) + ": " + guessDistribution[i]);
+			stats.append((i + 1) + ": " + guessDistribution[i] + '\n');
 		}
+		return stats.toString();
 	}
 
 

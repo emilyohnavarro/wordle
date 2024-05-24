@@ -145,8 +145,9 @@ public class WordleUI extends JFrame {
 				GameStatus gameStatus = wordle.getGameStatus();
 				String message = (gameStatus == GameStatus.WIN) ? 
 						gameStatus.toString() : 
-							(wordle.getGameStatus() + ". The word was " + wordle.getTarget().toUpperCase() + ".");
-				JOptionPane.showMessageDialog(this, ("YOU " + message), 
+							(wordle.getGameStatus() + 
+									". The word was " + wordle.getTarget().toUpperCase());
+				JOptionPane.showMessageDialog(this, ("YOU " + message + '\n' + wordle.getStats()), 
 						"Game over", JOptionPane.PLAIN_MESSAGE);
 			}
 		}

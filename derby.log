@@ -1,6 +1,6 @@
 ----------------------------------------------------------------
-Thu May 23 05:19:01 PDT 2024:
-Booting Derby version The Apache Software Foundation - Apache Derby - 10.17.1.0 - (1913217): instance a816c00e-018f-a563-a0a3-00000f8807d8 
+Fri May 24 05:21:02 PDT 2024:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.17.1.0 - (1913217): instance a816c00e-018f-aa8c-19b3-00000f87efd8 
 on database directory /Users/emilynavarro/eclipse-workspace/wordle/WordleStatsDB with class loader jdk.internal.loader.ClassLoaders$AppClassLoader@18769467 
 Loaded from file:/Users/emilynavarro/.m2/repository/org/apache/derby/derby/10.17.1.0/derby-10.17.1.0.jar
 java.vendor=Oracle Corporation

@@ -183,9 +183,14 @@ public class Wordle {
 		}
 	}
 	
+	
+	public String getStats() {
+		return gameOver ? stats.getStats() : "";
+	}
+	
+	
 	private void endGame() {
 		gameOver = true;
-		stats.printStats();
 	}
 	
 	
